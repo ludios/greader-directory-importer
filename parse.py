@@ -17,6 +17,8 @@ def unescape_xhtml(s):
 
 def get_url(s):
 	url = s.replace("<wbr></wbr>", "").split(">", 1)[1]
+	assert not '<' in url, url
+	assert not '>' in url, url
 	if '&' in url:
 		url = unescape_xhtml(url)
 	if url.startswith("feed://"):
