@@ -18,7 +18,11 @@ def unescape_xhtml(s):
 def get_url(s):
 	url = s.replace("<wbr></wbr>", "").split(">", 1)[1]
 	if '&' in url:
-		return unescape_xhtml(url)
+		url = unescape_xhtml(url)
+	if url.startswith("feed://"):
+		# Feed Directory has some feed:// results, but Reader treats feed://
+		# and http:// as the same feed.
+		url = url.replace("feed://", "http://", 1)
 	return url
 
 
