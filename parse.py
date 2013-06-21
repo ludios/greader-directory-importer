@@ -12,7 +12,10 @@ def unescape_xhtml(s):
 	).contents[0].string
 	if not unescaped:
 		unescaped = u""
-	return unescaped.decode("utf-8")
+	else:
+		# Convert BeautifulSoup thing into real unicode object
+		unescaped = unicode(unescaped)
+	return unescaped.encode("utf-8")
 
 
 def get_url(s):
@@ -28,17 +31,22 @@ def get_url(s):
 	return url
 
 
-def main():
+def yield_urls(fh):
 	TAKE, SKIP = range(2)
 	state = TAKE
-	for line in sys.stdin:
+	for line in fh:
 		if '<div class="feed-result-stats"><span class="number">' in line:
 			if '<span class="number">Unknown</span>' in line:
 				state = SKIP
 			else:
 				state = TAKE
 		elif state == TAKE and line.startswith('<div class="feed-info">'):
-			print get_url(line.rstrip())
+			yield get_url(line.rstrip())
+
+
+def main():
+	for url in yield_urls(sys.stdin):
+		print url
 
 
 if __name__ == '__main__':
