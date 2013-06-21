@@ -32,6 +32,9 @@ def get_url(s):
 def yield_urls(fh, take_everything):
 	UNKNOWN, TAKE, SKIP = range(3)
 	state = UNKNOWN
+	if take_everything:
+		# In case we have grep filtering out everything but feed URL lines
+		state = TAKE
 	for line in fh:
 		if '<div class="feed-result-stats"><span class="number">' in line:
 			if not take_everything and '<span class="number">Unknown</span>' in line:
