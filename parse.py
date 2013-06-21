@@ -12,9 +12,7 @@ def unescape_xhtml(s):
 	).contents[0].string
 	if not unescaped:
 		unescaped = u""
-	else:
-		# Convert BeautifulSoup thing into real unicode object
-		unescaped = unicode(unescaped)
+	# Convert BeautifulSoup thing into real str
 	return unescaped.encode("utf-8")
 
 
