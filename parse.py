@@ -30,16 +30,20 @@ def get_url(s):
 
 
 def yield_urls(fh):
-	TAKE, SKIP = range(2)
-	state = TAKE
+	UNKNOWN, TAKE, SKIP = range(3)
+	state = UNKNOWN
 	for line in fh:
 		if '<div class="feed-result-stats"><span class="number">' in line:
 			if '<span class="number">Unknown</span>' in line:
 				state = SKIP
 			else:
 				state = TAKE
-		elif state == TAKE and line.startswith('<div class="feed-info">'):
-			yield get_url(line.rstrip())
+		elif line.startswith('<div class="feed-info">'):
+			if state == TAKE:
+				yield get_url(line.rstrip())
+			elif state == UNKNOWN:
+				raise RuntimeError("Got feed-info %r before feed-result-stats?" % (line,))
+			# else pass if SKIP
 
 
 def main():
