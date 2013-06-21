@@ -29,12 +29,12 @@ def get_url(s):
 	return url
 
 
-def yield_urls(fh):
+def yield_urls(fh, take_everything):
 	UNKNOWN, TAKE, SKIP = range(3)
 	state = UNKNOWN
 	for line in fh:
 		if '<div class="feed-result-stats"><span class="number">' in line:
-			if '<span class="number">Unknown</span>' in line:
+			if not take_everything and '<span class="number">Unknown</span>' in line:
 				state = SKIP
 			else:
 				state = TAKE
@@ -47,7 +47,8 @@ def yield_urls(fh):
 
 
 def main():
-	for url in yield_urls(sys.stdin):
+	# Take everything because Google actually does have data for some "Unknown" feeds
+	for url in yield_urls(sys.stdin, take_everything=True):
 		print url
 
 
